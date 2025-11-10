@@ -1,0 +1,239 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "PAYMENT INSTRUCTION PARSER API",
+    "description": "This API parses payment instructions, validates them against business rules, and executes transactions on provided accounts. This simulates a core component of payment processing systems used in fintech applications."
+  },
+  "host": "localhost:5000",
+  "basePath": "/",
+  "schemes": ["http", "production"],
+  "paths": {
+    "/payment-instructions": {
+      "post": {
+        "summary": "Process and parse payment instruction",
+        "description": "Processes a payment instruction to debit from one account and credit to another",
+        "tags": ["Payment-Instructions"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["accounts", "instruction"],
+                "properties": {
+                  "accounts": {
+                    "type": "array",
+                    "minItems": 2,
+                    "description": "Array of account objects with at least 2 accounts",
+                    "items": {
+                      "type": "object",
+                      "required": ["id", "balance", "currency"],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Account identifier. Must start with a letter and can contain letters, numbers, and symbols (-, @, .)",
+                          "example": "a"
+                        },
+                        "balance": {
+                          "type": "number",
+                          "description": "Account balance (non-negative number)",
+                          "minimum": 0,
+                          "example": 230
+                        },
+                        "currency": {
+                          "type": "string",
+                          "description": "Currency code (e.g., USD, EUR, GBP)",
+                          "example": "USD"
+                        }
+                      }
+                    }
+                  },
+                  "instruction": {
+                    "type": "string",
+                    "description": "Payment instruction in the format: 'DEBIT [amount] [currency] FROM ACCOUNT [account_id] FOR CREDIT TO ACCOUNT [account_id] [ON [YYYY-MM-DD]]'. Date is optional.",
+                    "example": "debit 200 usd from ACCOUNT a for credit to ACCOUNT b on 2025-11-11"
+                  }
+                }
+              },
+              "examples": {
+                "withDate": {
+                  "summary": "Payment with future date",
+                  "value": {
+                    "accounts": [
+                      { "id": "a", "balance": 230, "currency": "USD" },
+                      { "id": "b", "balance": 300, "currency": "USD" }
+                    ],
+                    "instruction": "debit 200 usd from ACCOUNT a for credit to ACCOUNT b on 2025-11-11"
+                  }
+                },
+                "withoutDate": {
+                  "summary": "Payment without date (immediate)",
+                  "value": {
+                    "accounts": [
+                      { "id": "acc-001", "balance": 1000, "currency": "USD" },
+                      { "id": "acc-002", "balance": 500, "currency": "USD" }
+                    ],
+                    "instruction": "DEBIT 30 USD FROM ACCOUNT acc-001 FOR CREDIT TO ACCOUNT acc-002"
+                  }
+                },
+                "creditInstruction": {
+                  "summary": "Credit instruction format",
+                  "value": {
+                    "accounts": [
+                      { "id": "x", "balance": 500, "currency": "EUR" },
+                      { "id": "y", "balance": 200, "currency": "EUR" }
+                    ],
+                    "instruction": "CREDIT 50 EUR TO ACCOUNT x FOR DEBIT FROM ACCOUNT y"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment instruction processed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["DEBIT", "CREDIT"],
+                      "example": "DEBIT"
+                    },
+                    "amount": {
+                      "type": "number",
+                      "example": 30
+                    },
+                    "currency": {
+                      "type": "string",
+                      "example": "USD"
+                    },
+                    "debit_account": {
+                      "type": "string",
+                      "example": "a"
+                    },
+                    "credit_account": {
+                      "type": "string",
+                      "example": "b"
+                    },
+                    "execute_by": {
+                      "type": "string",
+                      "format": "date",
+                      "nullable": true,
+                      "example": "2025-11-11"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "pending"
+                    },
+                    "status_reason": {
+                      "type": "string",
+                      "example": "Transaction executed successfully"
+                    },
+                    "status_code": {
+                      "type": "string",
+                      "example": "AP00"
+                    },
+                    "accounts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "a"
+                          },
+                          "balance": {
+                            "type": "number",
+                            "example": 230
+                          },
+                          "balance_before": {
+                            "type": "number",
+                            "example": 230
+                          },
+                          "currency": {
+                            "type": "string",
+                            "example": "USD"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": null
+                    },
+                    "amount": {
+                      "type": "number",
+                      "nullable": true,
+                      "example": null
+                    },
+                    "currency": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": null
+                    },
+                    "debit_account": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": null
+                    },
+                    "credit_account": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": null
+                    },
+                    "execute_by": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": null
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "status_reason": {
+                      "type": "string",
+                      "description": "Error description",
+                      "example": "Malformed instruction: unable to parse keywords"
+                    },
+                    "status_code": {
+                      "type": "string",
+                      "description": "Error code",
+                      "example": "SY03"
+                    },
+
+                    "accounts": {
+                      "type": "array",
+                      "example": [],
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
