@@ -81,158 +81,17 @@
                   "summary": "Credit instruction format",
                   "value": {
                     "accounts": [
-                      { "id": "x", "balance": 500, "currency": "EUR" },
-                      { "id": "y", "balance": 200, "currency": "EUR" }
+                      { "id": "x", "balance": 500, "currency": "USD" },
+                      { "id": "abc", "balance": 200, "currency": "USD" }
                     ],
-                    "instruction": "CREDIT 50 EUR TO ACCOUNT x FOR DEBIT FROM ACCOUNT y"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Payment instruction processed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": ["DEBIT", "CREDIT"],
-                      "example": "DEBIT"
-                    },
-                    "amount": {
-                      "type": "number",
-                      "example": 30
-                    },
-                    "currency": {
-                      "type": "string",
-                      "example": "USD"
-                    },
-                    "debit_account": {
-                      "type": "string",
-                      "example": "a"
-                    },
-                    "credit_account": {
-                      "type": "string",
-                      "example": "b"
-                    },
-                    "execute_by": {
-                      "type": "string",
-                      "format": "date",
-                      "nullable": true,
-                      "example": "2025-11-11"
-                    },
-                    "status": {
-                      "type": "string",
-                      "example": "pending"
-                    },
-                    "status_reason": {
-                      "type": "string",
-                      "example": "Transaction executed successfully"
-                    },
-                    "status_code": {
-                      "type": "string",
-                      "example": "AP00"
-                    },
-                    "accounts": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "a"
-                          },
-                          "balance": {
-                            "type": "number",
-                            "example": 230
-                          },
-                          "balance_before": {
-                            "type": "number",
-                            "example": 230
-                          },
-                          "currency": {
-                            "type": "string",
-                            "example": "USD"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-                
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": null
-                    },
-                    "amount": {
-                      "type": "number",
-                      "nullable": true,
-                      "example": null
-                    },
-                    "currency": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": null
-                    },
-                    "debit_account": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": null
-                    },
-                    "credit_account": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": null
-                    },
-                    "execute_by": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": null
-                    },
-                    "status": {
-                      "type": "string",
-                      "example": "failed"
-                    },
-                    "status_reason": {
-                      "type": "string",
-                      "description": "Error description",
-                      "example": "Malformed instruction: unable to parse keywords"
-                    },
-                    "status_code": {
-                      "type": "string",
-                      "description": "Error code",
-                      "example": "SY03"
-                    },
-
-                    "accounts": {
-                      "type": "array",
-                      "example": [],
-                      "items": {
-                        "type": "object"
-                      }
-                    }
+                    "instruction": "CREDIT 50 USD TO ACCOUNT x FOR DEBIT FROM ACCOUNT abc"
                   }
                 }
               }
             }
           }
         }
+      
       }
     }
   }
