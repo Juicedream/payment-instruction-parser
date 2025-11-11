@@ -5,14 +5,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js" 
   },
   "keywords": [],
-  "author": "",
+  "author": "Jude Nwadiogor",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@app-core/logger": "file:core/logger",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-validator": "^7.3.0",
